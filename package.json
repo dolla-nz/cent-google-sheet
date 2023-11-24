@@ -1,0 +1,10 @@
+{
+  "name": "cent-nz",
+  "version": "0.1.0",
+  "description": "The Cent Google Sheets addon",
+  "scripts": {},
+  "devDependencies": {
+    "@google/clasp": "^2.4.2",
+    "@types/google-apps-script": "^1.0.57"
+  }
+}

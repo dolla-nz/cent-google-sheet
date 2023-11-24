@@ -1,0 +1,45 @@
+{
+  "timeZone": "Pacific/Auckland",
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "dependencies": {
+    "enabledAdvancedServices": [
+      {
+        "userSymbol": "Sheets",
+        "serviceId": "sheets",
+        "version": "v4"
+      }
+    ]
+  },
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/drive.file",
+    "https://www.googleapis.com/auth/script.locale",
+    "https://www.googleapis.com/auth/script.scriptapp",
+    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/spreadsheets.currentonly"
+  ],
+  "urlFetchWhitelist": [
+    "https://nzfcc.org/",
+    "https://api.sheets.staging.dolla.nz/",
+    "https://api.sheets.dolla.nz/",
+    "https://api.akahu.io/",
+    "https://oauth.akahu.io/",
+    "https://api.cent.nz/"
+  ],
+  "addOns": {
+    "common": {
+      "name": "Cent",
+      "logoUrl": "https://static.dolla.nz/images/cent-logo.png",
+      "useLocaleFromApp": true,
+      "homepageTrigger": {
+        "runFunction": "onLaunch",
+        "enabled": true
+      }
+    },
+    "sheets": {
+      "onFileScopeGrantedTrigger": {
+        "runFunction": "onLaunch"
+      }
+    }
+  }
+}
