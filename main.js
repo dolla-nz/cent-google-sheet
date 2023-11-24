@@ -93,7 +93,7 @@ function createMainCard() {
 
   const enableSyncing = CardService.newDecoratedText()
     .setTopLabel("Enable Automatic Syncing")
-    .setText("Cent will automatically add the latest data around 1AM each day")
+    .setText("Cent will automatically add the latest data around 4AM each day")
     .setWrapText(true)
     .setSwitchControl(
       CardService.newSwitch()
