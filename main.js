@@ -6,7 +6,7 @@ const DOLLA_LOGO = "https://static.dolla.nz/images/logo.png";
 const CENT_ICON = "https://static.dolla.nz/images/cent-icon.png";
 const CENT_LOGO = "https://static.dolla.nz/images/cent-logo.png";
 const GET_QR_CODE = "https://static.dolla.nz/images/get-qr.png";
-const CENT_PINK = "#EE3C80";
+const CENT_PINK = "#f04d68";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24; // for date maths
 
