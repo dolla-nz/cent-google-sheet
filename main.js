@@ -356,7 +356,7 @@ function pressSyncAccounts() {
 
 /**
  * Creates a new trigger to run the cron function every day.
- * A time is selected between 1 and 2 AM randomly by Google, it's then run at that time every time.
+ * A time is selected between 4 and 5 AM randomly by Google, it's then run at that time every time.
  */
 function createCronTrigger() {
   try {
@@ -367,7 +367,7 @@ function createCronTrigger() {
     const trigger = triggers.find((t) => t.getHandlerFunction() === "cron");
     if (!trigger) {
       console.info("fn.createCronTrigger", "creating trigger");
-      ScriptApp.newTrigger("cron").timeBased().atHour(1).everyDays(1).create();
+      ScriptApp.newTrigger("cron").timeBased().atHour(4).everyDays(1).create();
       // ScriptApp.newTrigger("cron").timeBased().everyHours(1).create();
     } else {
       console.info("fn.createCronTrigger", "trigger already exists");
