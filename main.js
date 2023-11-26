@@ -128,8 +128,36 @@ function createMainCard() {
     .addWidget(syncText)
     .addWidget(enableSyncing)
     .addWidget(catmapText);
+
+  // Create open links
+  const gettingStartedLink = CardService.newOpenLink().setUrl(
+    "https://cent.nz/getting-started"
+  );
+  const dollaLink = CardService.newOpenLink().setUrl("https://dolla.nz");
+
+  // Create text buttons with links
+  const GettingStartedButton = CardService.newTextButton()
+    .setText("Guide")
+    .setOpenLink(gettingStartedLink)
+    .setTextButtonStyle(CardService.TextButtonStyle.TEXT);
+
+  // Add button to the decorated text
+  const redditDecoratedText = CardService.newDecoratedText()
+    .setText("Getting Started")
+    .setButton(GettingStartedButton);
+
+  const dollaDecoratedText = CardService.newDecoratedText()
+    .setText("Created by Dolla")
+    .setOpenLink(dollaLink)
+    .setStartIcon(CardService.newIconImage().setIconUrl(DOLLA_LOGO));
+
+  // Link Section
+  const linkSection = CardService.newCardSection()
+    .addWidget(redditDecoratedText)
+    .addWidget(dollaDecoratedText);
   const card = CardService.newCardBuilder()
     .addSection(section)
+    .addSection(linkSection)
     .setFixedFooter(footer);
 
   console.info("fn.createMainCard.success");
