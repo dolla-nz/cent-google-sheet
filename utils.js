@@ -31,6 +31,17 @@ function initialiseSheet() {
     const range = sheet.getRange(lr + 1, 1);
     range.setValues([[""]]);
   }
+
+  // Get the active spreadsheet
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const currentName = spreadsheet.getName();
+
+  // Check if the spreadsheet is unnamed or has the default name
+  if (currentName === "" || currentName === "Untitled spreadsheet") {
+    console.info("fn.initialiseSheet", "Renaming spreadsheet");
+    spreadsheet.rename("Cent Budget Spreadsheet");
+  }
+
   console.info("fn.initialiseSheet.success");
 }
 

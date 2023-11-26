@@ -51,9 +51,7 @@ function createHeaderRow(sheetName) {
       "Type",
       "Current Balance",
       "Available Balance",
-      "Status",
-      "Date Refreshed",
-      "Date Added",
+      "Date",
     ],
     CentCustomCategories: [
       "Set Category",
@@ -82,7 +80,9 @@ function createHeaderRow(sheetName) {
   ];
 
   headerRow.forEach((header, i) => {
-    if (header === "NZFCC.org") {
+    if (header === `=image("${CENT_ICON}")`) {
+      formatIdColumn(i + 1);
+    } else if (header === "NZFCC.org") {
       createDropdown(i + 1, keys.nzfcc_categories);
     } else if (header === "Category") {
       createDropdown(i + 1, keys.pfm_categories);
@@ -167,6 +167,19 @@ function createDropdown(colIndex, type) {
 
   range.setDataValidation(rule);
   console.info("fn.createDropdown.success");
+}
+
+/**
+ * Sets the ids column to be white text on a white background
+ * @param {number} colIndex
+ */
+function formatIdColumn(colIndex) {
+  console.info("fn.formatIdColumn", colIndex);
+  const ss = SpreadsheetApp.getActiveSheet();
+
+  const range = ss.getRange(2, colIndex, 1000);
+  range.setFontColor("#FFFFFF");
+  console.info("fn.formatIdColumn.success");
 }
 
 /**

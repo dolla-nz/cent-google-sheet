@@ -236,19 +236,12 @@ function _syncBalances() {
     const now = new Date();
 
     // Parse the accounts into a 2d array, ready to plop into the spreadsheet.
-    // This is much faster than inserting one row at a time.
     const balanceRows = accounts
-      .map((account, i) => {
-        const {
-          _id,
-          connection,
-          name,
-          status,
-          formatted_account,
-          balance,
-          refreshed,
-          type,
-        } = account;
+      // Remove inactive accounts
+      .filter((account) => account.status === "ACTIVE")
+      .map((account) => {
+        const { _id, connection, name, formatted_account, balance, type } =
+          account;
         if (_id) {
           return [
             _id,
@@ -258,8 +251,6 @@ function _syncBalances() {
             type,
             balance?.current,
             balance?.available,
-            status,
-            new Date(refreshed?.balance),
             now,
           ];
         }
@@ -269,12 +260,12 @@ function _syncBalances() {
 
     console.info("fn.syncBalances_", "Got", balanceRows.length, "balance rows");
 
-    // Insert new rows at the top of the sheet
+    // Insert new rows at the bottom of the spreadsheet
     if (balanceRows.length) {
       console.info("fn.syncBalances_", "Inserting Rows");
-      ss.insertRows(2, balanceRows.length);
+      const lastRow = ss.getLastRow();
       const range = ss.getRange(
-        2,
+        lastRow + 1,
         1,
         balanceRows.length,
         balanceRows[0].length
@@ -300,21 +291,21 @@ function _syncBalances() {
 }
 
 function _syncAccounts() {
-  console.info("fn.syncAccounts_");
+  console.info("fn._syncAccounts");
   const ss = sheetFromName("CentAccounts");
   const userToken = _getUserToken();
 
   // Check if this is a new sheet
   const lr = ss.getLastRow();
   if (lr <= 1) {
-    console.info("fn.syncAccounts_", "Resizing Column width");
+    console.info("fn._syncAccounts", "Resizing Column width");
     const lc = ss.getLastColumn();
     // resize columns excluding the id column
     ss.autoResizeColumns(2, lc - 1);
   }
 
   try {
-    console.info("fn.syncAccounts_", "Fetching Accounts");
+    console.info("fn._syncAccounts", "Fetching Accounts");
     // Get the accounts
     const res = UrlFetchApp.fetch("https://api.cent.nz/v1/sync/accounts", {
       headers: {
@@ -328,6 +319,17 @@ function _syncAccounts() {
     const now = new Date();
 
     const ids = getIds("CentAccounts");
+
+    // Mark accounts not in the response as DELETED
+    const fetchedIds = accounts.map((account) => account._id);
+
+    // Check and mark rows as DELETED if _id not found in fetchedIds
+    for (let i = 2; i <= lr; i++) {
+      const rowId = ss.getRange(i, 1).getValue();
+      if (!fetchedIds.includes(rowId)) {
+        ss.getRange(i, 8).setValue("DELETED");
+      }
+    }
 
     // Parse the accounts into a 2d array, ready to plop into the spreadsheet.
     // This is much faster than inserting one row at a time.
@@ -348,7 +350,7 @@ function _syncAccounts() {
             // replace row
             const rowIndex = ids.indexOf(_id) + 1;
             console.info(
-              "fn.syncAccounts_",
+              "fn._syncAccounts",
               "replacing row",
               _id,
               "rowIndex",
@@ -385,7 +387,7 @@ function _syncAccounts() {
       })
       .filter((x) => Boolean(x));
     if (accountRows.length) {
-      console.info("fn.syncAccounts_", `Adding ${accountRows.length} new rows`);
+      console.info("fn._syncAccounts", `Adding ${accountRows.length} new rows`);
       const lr = ss.getLastRow();
       const range = ss.getRange(
         lr + 1,
@@ -398,11 +400,11 @@ function _syncAccounts() {
 
     SpreadsheetApp.flush();
 
-    console.info("fn.syncAccounts_.success", accountRows.length || 0);
+    console.info("fn._syncAccounts.success", accountRows.length || 0);
     // Return the number of new accounts
     return accountRows.length || 0;
   } catch (f) {
-    console.error("fn.syncAccounts_", f);
+    console.error("fn._syncAccounts", f);
     SpreadsheetApp.getActive().toast(f.message, "⚠️ Error");
     return 0;
   }
