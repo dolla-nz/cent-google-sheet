@@ -84,7 +84,7 @@ function createHeaderRow(sheetName) {
       formatIdColumn(i + 1);
     } else if (header === "NZFCC.org") {
       createDropdown(i + 1, keys.nzfcc_categories);
-    } else if (header === "Category") {
+    } else if (header === "Category" || header === "Set Category") {
       createDropdown(i + 1, keys.pfm_categories);
     } else if (header === "Overwrite Existing") {
       createDropdown(i + 1, ["", "Yes"]);
