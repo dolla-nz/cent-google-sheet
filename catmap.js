@@ -80,6 +80,10 @@ function getHeaders(sheetName) {
   }
 
   const lastCol = ss.getLastColumn();
+  if (lastCol === 0 || !lastCol) {
+    console.info("fn.getHeaders", "No columns in sheet");
+    return [];
+  }
   const array = ss.getRange(1, 1, 1, lastCol).getValues()[0];
 
   console.info("fn.getHeaders.success", array.length);
