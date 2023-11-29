@@ -71,8 +71,13 @@ function getIds(sheetName) {
     ss = SpreadsheetApp.getActiveSheet();
   }
 
-  var lastRow = ss.getLastRow();
-  var array = ss
+  const lastRow = ss.getLastRow();
+  if (lastRow === 0 || !lastRow) {
+    console.info("fn.getIds", "No rows in sheet");
+    return [];
+  }
+
+  const array = ss
     .getRange("A1:A" + lastRow)
     .getValues()
     .join()
