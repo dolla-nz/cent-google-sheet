@@ -16,9 +16,9 @@ function cron() {
     //Balances
     console.info("fn.cron", "Syncing Balances");
     _syncBalances();
-    // Sync 90 days back if there are new accounts, otherwise 30 days
+    // Sync 30 days of transactions
     console.info("fn.cron", "Syncing Transactions");
-    _syncTransactions(newAccounts ? 90 : 30);
+    _syncTransactions(30);
 
     console.info("fn.cron", "Syncing Transactions");
     catmap();
@@ -30,7 +30,7 @@ function cron() {
   }
 }
 
-function _syncTransactions(days = 90) {
+function _syncTransactions(days = 30) {
   console.info("fn._syncTransactions", days);
 
   const ss = sheetFromName("CentTransactions");
@@ -64,7 +64,7 @@ function _syncTransactions(days = 90) {
 
       // Insert the transactions
       const accountsResult = JSON.parse(res);
-      const accounts = accountsResult.items;
+      const accounts = accountsResult.items ?? [];
 
       do {
         // Get the transactions
@@ -80,7 +80,7 @@ function _syncTransactions(days = 90) {
 
         // Insert the transactions
         const transactionResult = JSON.parse(res);
-        const transactions = transactionResult.items;
+        const transactions = transactionResult.items ?? [];
 
         console.info(
           "fn._syncTransactions",
@@ -170,12 +170,14 @@ function _syncTransactions(days = 90) {
     }
 
     // resize if this is a new sheet
-    if (lr <= 1) {
-      console.info("fn._syncTransactions", "Resizing Column width");
-      const lc = ss.getLastColumn();
-      // resize columns excluding the id column
-      ss.autoResizeColumns(2, lc - 1);
-    }
+    try {
+      if (lr <= 1) {
+        console.info("fn._syncTransactions", "Resizing Column width");
+        const lc = ss.getLastColumn();
+        // resize columns excluding the id column
+        ss.autoResizeColumns(2, lc - 1);
+      }
+    } catch (error) {}
 
     const [nlr, nlc] = [ss.getLastRow(), ss.getLastColumn()];
     console.info("new lastrow", nlr, "new last column", nlc);
@@ -230,7 +232,7 @@ function _syncBalances() {
     });
 
     const accountsResult = JSON.parse(res);
-    const accounts = accountsResult.items;
+    const accounts = accountsResult.items ?? [];
     console.info("fn.syncBalances_", "Got", accounts.length, "accounts");
 
     const now = new Date();
@@ -315,7 +317,7 @@ function _syncAccounts() {
 
     // Insert the transactions
     const accountsResult = JSON.parse(res);
-    const accounts = accountsResult.items;
+    const accounts = accountsResult.items ?? [];
     const now = new Date();
 
     const ids = getIds("CentAccounts");
